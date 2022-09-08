@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using TripServiceKata.Exception;
 using TripServiceKata.Trip;
@@ -16,25 +14,21 @@ namespace TripServiceKata.Tests
         private static readonly User.User UNUSED_USER = null;
         private static readonly User.User BILLYNOMATES = new User.User();
 
-        private static User.User _loggedInUser;
         private readonly User.User ANOTHER_FRIEND = new User.User();
         private readonly Trip.Trip TO_SPAIN = new Trip.Trip();
-        private readonly Trip.Trip TO_CANCUN = new Trip.Trip();
         private readonly Trip.Trip TO_CANADA = new Trip.Trip();
 
         [SetUp]
         public void SetUp()
         {
             _tripService = new TestableTripService();
-            _loggedInUser = BILLYNOMATES;
         }
 
         [Test]
         public void ShouldThrowExceptionIfUserNotLoggedIn()
         {
-            _loggedInUser = GUEST;
             Assert.Throws<UserNotLoggedInException>(() =>
-                _tripService.GetTripsByUser(UNUSED_USER)
+                _tripService.GetTripsByUser(UNUSED_USER, GUEST)
             );
         }
 
@@ -48,7 +42,7 @@ namespace TripServiceKata.Tests
                 .Build();
 
             // Act
-            List<Trip.Trip> trips = _tripService.GetTripsByUser(friend);
+            List<Trip.Trip> trips = _tripService.GetTripsByUser(friend, BILLYNOMATES);
 
             // Assert
             Assert.That(trips.Count, Is.EqualTo(0));
@@ -61,12 +55,12 @@ namespace TripServiceKata.Tests
 
             // Arrange
             User.User friend = oUser()
-                .isFriendsWith(ANOTHER_FRIEND, _loggedInUser)
+                .isFriendsWith(ANOTHER_FRIEND)
                 .goingOnHolidayTo(TO_SPAIN, TO_CANADA)
                 .Build();
 
             // Act
-            List<Trip.Trip> trips = _tripService.GetTripsByUser(friend);
+            List<Trip.Trip> trips = _tripService.GetTripsByUser(friend, ANOTHER_FRIEND);
 
             // Assert
             Assert.Multiple(() =>
@@ -82,11 +76,6 @@ namespace TripServiceKata.Tests
 
         private class TestableTripService : TripService
         {
-            protected override User.User GetLoggedInUser()
-            {
-                return _loggedInUser;
-            }
-
             protected override List<Trip.Trip> FindTripsByUser(User.User user)
             {
                 return user.Trips();
