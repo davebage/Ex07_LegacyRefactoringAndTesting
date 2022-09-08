@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using TripServiceKata.Exception;
 using TripServiceKata.Trip;
+using static TripServiceKata.Tests.UserBuilder;
 
 namespace TripServiceKata.Tests
 {
@@ -41,7 +42,7 @@ namespace TripServiceKata.Tests
         public void Should_return_no_trips_when_users_not_friends()
         {
             // Arrange
-            User.User friend = UserBuilder.oUser()
+            User.User friend = oUser()
                 .isFriendsWith(ANOTHER_FRIEND)
                 .goingOnHolidayTo(TO_SPAIN)
                 .Build();
@@ -59,7 +60,7 @@ namespace TripServiceKata.Tests
 
 
             // Arrange
-            User.User friend = UserBuilder.oUser()
+            User.User friend = oUser()
                 .isFriendsWith(ANOTHER_FRIEND, _loggedInUser)
                 .goingOnHolidayTo(TO_SPAIN, TO_CANADA)
                 .Build();
