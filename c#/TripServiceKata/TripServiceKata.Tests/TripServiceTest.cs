@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using TripServiceKata.Exception;
 using TripServiceKata.Trip;
@@ -12,7 +13,7 @@ namespace TripServiceKata.Tests
         private TestableTripService _tripService;
         private static readonly User.User GUEST = null;
         private static readonly User.User UNUSED_USER = null;
-        private static  readonly  User.User BILLYNOMATES = new User.User();
+        private static readonly User.User BILLYNOMATES = new User.User();
 
         private static User.User _loggedInUser;
         private readonly User.User ANOTHER_FRIEND = new User.User();
@@ -40,9 +41,10 @@ namespace TripServiceKata.Tests
         public void Should_return_no_trips_when_users_not_friends()
         {
             // Arrange
-            User.User friend = new User.User();
-            friend.AddFriend(ANOTHER_FRIEND);
-            friend.AddTrip(TO_SPAIN);
+            User.User friend = UserBuilder.oUser()
+                .isFriendsWith(ANOTHER_FRIEND)
+                .goingOnHolidayTo(TO_SPAIN)
+                .Build();
 
             // Act
             List<Trip.Trip> trips = _tripService.GetTripsByUser(friend);
@@ -54,18 +56,24 @@ namespace TripServiceKata.Tests
         [Test]
         public void Should_return_trips_when_users_are_friends()
         {
+
+
             // Arrange
-            User.User friend = new User.User();
-            friend.AddFriend(ANOTHER_FRIEND);
-            friend.AddFriend(_loggedInUser);
-            friend.AddTrip(TO_SPAIN);
+            User.User friend = UserBuilder.oUser()
+                .isFriendsWith(ANOTHER_FRIEND, _loggedInUser)
+                .goingOnHolidayTo(TO_SPAIN, TO_CANADA)
+                .Build();
 
             // Act
             List<Trip.Trip> trips = _tripService.GetTripsByUser(friend);
 
             // Assert
-            Assert.That(trips.Count, Is.EqualTo(1));
-            Assert.That(trips[0], Is.EqualTo(TO_SPAIN));
+            Assert.Multiple(() =>
+            {
+                Assert.That(trips.Count, Is.EqualTo(2));
+                Assert.That(trips[0], Is.EqualTo(TO_SPAIN));
+                Assert.That(trips[1], Is.EqualTo(TO_CANADA));
+            });
         }
 
 
@@ -83,5 +91,6 @@ namespace TripServiceKata.Tests
                 return user.Trips();
             }
         }
+
     }
 }

@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "41370430-26a5-44fe-a12d-d63ecd369009": {
+      "ProjectGuid": "41370430-26a5-44fe-a12d-d63ecd369009",
+      "DisplayName": "TripServiceKata.Tests",
+      "ColorIndex": 0
+    },
+    "45e49cba-0800-4391-ad80-e23837c66d95": {
+      "ProjectGuid": "45e49cba-0800-4391-ad80-e23837c66d95",
+      "DisplayName": "TripServiceKata",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
